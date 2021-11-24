@@ -8,12 +8,12 @@ version-shuttle could list all branches of your current repo and allow you to ch
 
 ![choose-branches](media/choose-branches.gif)
 
-> Tip: Each of them can be checkout except for the local branch which is already exists.
+> Tip: Each of them can be download except for the local branch which is already exists.
 
 Then shuttle between them and coding as uaual:
 
 ![checkout-branches](media/checkout-branches.gif)
 
-> Tip: the branches you checkout will stored in a folder named "_version-store" at the same directory with your repo.
+> Tip: the branches you download will stored in a folder named "_version-store" at the same directory with your repo.
 
 **Enjoy!**

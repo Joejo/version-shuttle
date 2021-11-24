@@ -1,14 +1,21 @@
 {
 	"name": "version-shuttle",
+  "icon": "dep.png",
 	"displayName": "Version Shuttle",
 	"description": "List and checkout all branches or versions of your git repo",
-	"version": "0.0.1",
+	"version": "0.0.5",
+  "publisher": "liquidityVision",
+	"license": "MIT",
 	"engines": {
 		"vscode": "^1.61.0"
 	},
 	"categories": [
 		"Other"
 	],
+	"repository": {
+    "type": "git",
+    "url": "https://github.com/Joejo/version-shuttle"
+  },
 	"activationEvents": [
 		"onCommand:helloworld.helloWorld",
 		"onView:fileExplorer",
@@ -145,13 +152,13 @@
 		"eslint": "^7.32.0",
 		"glob": "^7.1.7",
 		"iconv-lite-umd": "^0.6.8",
-		"mkdirp": "^0.5.1",
 		"mocha": "^9.1.1",
-		"rimraf": "^2.6.2",
-		"typescript": "^4.4.3"
+		"typescript": "^4.4.3",
+		"vscode": "^0.11.0"
 	},
 	"dependencies": {
-		"simple-git": "*",
-		"vscode": "^0.11.0"
+		"mkdirp": "^0.5.1",
+		"rimraf": "^2.6.2",
+		"simple-git": "*"
 	}
 }

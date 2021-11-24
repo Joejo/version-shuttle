@@ -34,7 +34,7 @@ export function activate(context: vscodeClient.ExtensionContext) {
 	vscode.commands.executeCommand('RepoSwitch.listBranch');
 
 	// refresh refreshBranchLists
-	vscode.commands.registerCommand('Branch-Select.refreshEntry', () => {
+	const disposableRegresh = vscode.commands.registerCommand('Branch-Select.refreshEntry', () => {
 		vscode.commands.executeCommand('RepoSwitch.listBranch');
 	});
 
@@ -45,7 +45,7 @@ export function activate(context: vscodeClient.ExtensionContext) {
 
 	//register choose branch
 	new FileExplorer(context, branchStore, refreshBranchLists);
-	vscode.commands.registerCommand('Branch-Select.chooseBranch', (args: string) => {
+	const disposableChoose = vscode.commands.registerCommand('Branch-Select.chooseBranch', (args: string) => {
 		vscode.window
 			.showInformationMessage(
 				"Checkout all files of this branch or version ?",
@@ -76,7 +76,7 @@ export function activate(context: vscodeClient.ExtensionContext) {
 
 	// git channel
 	const outputChannel = vscode.window.createOutputChannel('RepoSwitch');
-	vscode.commands.registerCommand('RepoSwitch.init', () => {
+	const disposableInit = vscode.commands.registerCommand('RepoSwitch.init', () => {
 		if (projectRoot === undefined) {
 			vscode.window.showErrorMessage('No directory open. Please open a directory first.');
 		} else {
@@ -86,7 +86,7 @@ export function activate(context: vscodeClient.ExtensionContext) {
 		 }
 	});
 
-	vscode.commands.registerCommand('RepoSwitch.listBranch', () => {
+	const disposableListBranch = vscode.commands.registerCommand('RepoSwitch.listBranch', () => {
 		simpleGit.branch('-r',(err: any, result: any) => {
 			if (err) {
 				vscode.window.showInformationMessage("Initiated git repository at err" + err);	
@@ -103,7 +103,10 @@ export function activate(context: vscodeClient.ExtensionContext) {
 		});
 	});
 
-	// context.subscriptions.push(disposableInit);
+	context.subscriptions.push(disposableInit);
+	context.subscriptions.push(disposableRegresh);
+	context.subscriptions.push(disposableChoose);
+	context.subscriptions.push(disposableListBranch);
 	// context.subscriptions.push(disposableBranchAll);
 }
 
