@@ -14,7 +14,7 @@ version-shuttle could list all branches of your current repo and allow you to ch
 
 > Tip: Each of them can be download except for the local branch which is already exists.
 
-Then shuttle between them and coding as uaual:
+Then shuttle between them and coding as usual:
 
 ![checkout-branches](media/checkout-branches.gif)
 
