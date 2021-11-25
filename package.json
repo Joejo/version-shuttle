@@ -3,7 +3,7 @@
   "icon": "dep.png",
 	"displayName": "Version Shuttle",
 	"description": "List and checkout all branches or versions of your git repo",
-	"version": "0.0.5",
+	"version": "0.0.6",
   "publisher": "liquidityVision",
 	"license": "MIT",
 	"engines": {
