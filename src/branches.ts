@@ -17,9 +17,9 @@ export class BranchItems
 	): vscode.ProviderResult<BranchItem[]> {
     if (element) {
       //child node
-      var childrenList = [];
+      const childrenList = [];
       for (let index = 0; index < this.branches.length; index++) {
-        var item = new BranchItem(
+        const item = new BranchItem(
           '1.0.0',
           this.branches[index],
           vscode.TreeItemCollapsibleState.None

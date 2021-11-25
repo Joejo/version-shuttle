@@ -89,7 +89,7 @@ export function activate(context: vscodeClient.ExtensionContext) {
 	const disposableListBranch = vscode.commands.registerCommand('RepoSwitch.listBranch', () => {
 		simpleGit.branch('-r',(err: any, result: any) => {
 			if (err) {
-				vscode.window.showInformationMessage("Initiated git repository at err" + err);	
+				vscode.window.showWarningMessage("Initiated git repository at err: " + err + ' , Please make sure you\'re running in a git repository root path!');	
 			}
 			if (result) {
 				const { all } = result;
