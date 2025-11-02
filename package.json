@@ -1,10 +1,10 @@
 {
-	"name": "version-shuttle",
+	"name": "branch-shuttle",
 	"icon": "dep.png",
-	"displayName": "Version Shuttle",
+	"displayName": "Branch Shuttle",
 	"description": "List and checkout all branches or versions of your git repo",
 	"version": "0.0.7",
-	"publisher": "liquidityVision",
+	"publisher": "tfrain",
 	"license": "MIT",
 	"engines": {
 		"vscode": "^1.74.0",
@@ -15,7 +15,7 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/Joejo/version-shuttle"
+		"url": "https://github.com/tfrain/version-shuttle"
 	},
 	"activationEvents": [
 		"onView:Branch-Select",
@@ -51,11 +51,11 @@
 				}
 			},
 			{
-				"command": "fileExplorer.openTerminal",
-				"title": "open in terminal",
+				"command": "fileExplorer.openInVSCode",
+				"title": "Open in VS Code",
 				"icon": {
-					"light": "resources/light/terminal.svg",
-					"dark": "resources/dark/terminal.svg"
+					"light": "resources/light/document.svg",
+					"dark": "resources/dark/document.svg"
 				}
 			},
 			{
@@ -113,7 +113,7 @@
 					"group": "inline"
 				},
 				{
-					"command": "fileExplorer.openTerminal",
+					"command": "fileExplorer.openInVSCode",
 					"when": "view == fileExplorer && viewItem == directory",
 					"group": "inline"
 				},

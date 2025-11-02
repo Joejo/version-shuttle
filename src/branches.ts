@@ -1,11 +1,13 @@
 import * as vscode from 'vscode';
+import * as fs from 'fs';
+import * as path from 'path';
 import { SimpleGit } from 'simple-git';
 
 export class BranchItems implements vscode.TreeDataProvider<BranchItem> {
 	private _onDidChangeTreeData: vscode.EventEmitter<BranchItem | undefined | null | void> = new vscode.EventEmitter<BranchItem | undefined | null | void>();
 	readonly onDidChangeTreeData: vscode.Event<BranchItem | undefined | null | void> = this._onDidChangeTreeData.event;
 
-	constructor(private git: SimpleGit) {}
+	constructor(private git: SimpleGit, private branchStore: string) { }
 
 	refresh(): void {
 		this._onDidChangeTreeData.fire();
@@ -21,7 +23,8 @@ export class BranchItems implements vscode.TreeDataProvider<BranchItem> {
 	async getChildren(element?: BranchItem): Promise<BranchItem[]> {
 		if (element) {
 			const branches = await this.getBranches();
-			return branches.map(branch => {
+			const allBranches = [...branches];
+			return allBranches.map(branch => {
 				const item = new BranchItem('1.0.0', branch, vscode.TreeItemCollapsibleState.None);
 				item.command = {
 					command: 'Branch-Select.chooseBranch',
@@ -43,6 +46,20 @@ export class BranchItems implements vscode.TreeDataProvider<BranchItem> {
 			vscode.window.showWarningMessage("Error fetching branches: " + err);
 			return [];
 		}
+	}
+
+	private getDownloadedBranches(): string[] {
+		const branches: string[] = [];
+		if (fs.existsSync(this.branchStore)) {
+			const downloadedBranches = fs.readdirSync(this.branchStore);
+			downloadedBranches.forEach((branchDir) => {
+				const branchPath = path.join(this.branchStore, branchDir);
+				if (fs.lstatSync(branchPath).isDirectory()) {
+					branches.push(branchDir);
+				}
+			});
+		}
+		return branches;
 	}
 }
 

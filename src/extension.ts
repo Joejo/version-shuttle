@@ -9,7 +9,6 @@ import { FileExplorer, _ } from './fileExplorer';
 
 
 export function activate(context: vscode.ExtensionContext) {
-	console.log('Version Shuttle is now active!');
 	const projectRoot = vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0
 		? vscode.workspace.workspaceFolders[0].uri.fsPath
 		: undefined;
@@ -31,10 +30,12 @@ export function activate(context: vscode.ExtensionContext) {
 		_.mkdir(branchStore);
 	}
 
-	const branchItems = new BranchItems(git);
+	const branchItems = new BranchItems(git, branchStore);
 	vscode.window.registerTreeDataProvider('Branch-Select', branchItems);
 
-	const fileExplorer = new FileExplorer(context, branchStore);
+	console.log('Version Shuttle is now active!');
+
+	const fileExplorer = new FileExplorer(context, branchStore, git);
 	vscode.window.registerTreeDataProvider('fileExplorer', fileExplorer);
 
 	// refresh refreshBranchLists
@@ -53,14 +54,33 @@ export function activate(context: vscode.ExtensionContext) {
 
 		if (answer === "Yes") {
 			try {
+				const isRemote = args.startsWith('remotes/origin/');
 				const choosedBranch = args.replace(/remotes\/origin\//g, '');
 				const folderName = choosedBranch.replace(/\//g, '-');
 				const p = `${branchStore}/${folderName}`;
-				await git.raw(['worktree', 'add', p, choosedBranch]);
+
+				if (fs.existsSync(p)) {
+					vscode.window.showInformationMessage(`Branch ${choosedBranch} is already downloaded.`);
+					return;
+				}
+
+				// Prune stale worktrees that might have been manually deleted
+				await git.raw(['worktree', 'prune']);
+
+				const localBranches = await git.branchLocal();
+				if (isRemote && !localBranches.all.includes(choosedBranch)) {
+					await git.raw(['worktree', 'add', '-b', choosedBranch, p, args]);
+				} else {
+					await git.raw(['worktree', 'add', p, choosedBranch]);
+				}
+
 				fileExplorer.refresh();
+				branchItems.refresh();
 				vscode.window.showInformationMessage(`Branch ${choosedBranch} checked out successfully.`);
 			} catch (err: any) {
-				vscode.window.showErrorMessage(err);
+				const errorMessage = `Failed to checkout branch. Raw error: ${JSON.stringify(err)}`;
+				console.error(errorMessage);
+				vscode.window.showErrorMessage(errorMessage);
 			}
 		}
 	});
