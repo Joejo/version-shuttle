@@ -1,63 +1,61 @@
 import * as vscode from 'vscode';
+import { SimpleGit } from 'simple-git';
 
-export class BranchItems
-	implements vscode.TreeDataProvider<BranchItem> {
-	constructor(private branches: string[]) {
-		this.branches = branches;
+export class BranchItems implements vscode.TreeDataProvider<BranchItem> {
+	private _onDidChangeTreeData: vscode.EventEmitter<BranchItem | undefined | null | void> = new vscode.EventEmitter<BranchItem | undefined | null | void>();
+	readonly onDidChangeTreeData: vscode.Event<BranchItem | undefined | null | void> = this._onDidChangeTreeData.event;
+
+	constructor(private git: SimpleGit) {}
+
+	refresh(): void {
+		this._onDidChangeTreeData.fire();
 	}
+
 	getTreeItem(element: BranchItem): vscode.TreeItem {
 		if (element.label !== 'Branch Lists') {
 			element.contextValue = 'file';
 		}
-    return element;
-  }
+		return element;
+	}
 
-  getChildren(
-    element?: BranchItem
-	): vscode.ProviderResult<BranchItem[]> {
-    if (element) {
-      //child node
-      const childrenList = [];
-      for (let index = 0; index < this.branches.length; index++) {
-        const item = new BranchItem(
-          '1.0.0',
-          this.branches[index],
-          vscode.TreeItemCollapsibleState.None
-				);
-				const branch = this.branches[index];
-        item.command = {
-          command: 'Branch-Select.chooseBranch', // command id
-          title: branch,
-          arguments: [branch], // command params
-        };
-        childrenList[index] = item;
-      }
-      return childrenList;
-    } else {
-      // root node
-      return [
-        new BranchItem(
-          '1.0.0',
-          'Branch Lists',
-          vscode.TreeItemCollapsibleState.Collapsed
-        ),
-      ];
-    }
+	async getChildren(element?: BranchItem): Promise<BranchItem[]> {
+		if (element) {
+			const branches = await this.getBranches();
+			return branches.map(branch => {
+				const item = new BranchItem('1.0.0', branch, vscode.TreeItemCollapsibleState.None);
+				item.command = {
+					command: 'Branch-Select.chooseBranch',
+					title: branch,
+					arguments: [branch],
+				};
+				return item;
+			});
+		} else {
+			return [new BranchItem('1.0.0', 'Branch Lists', vscode.TreeItemCollapsibleState.Collapsed)];
+		}
+	}
+
+	private async getBranches(): Promise<string[]> {
+		try {
+			const result = await this.git.branch(['-r']);
+			return result.all;
+		} catch (err: any) {
+			vscode.window.showWarningMessage("Error fetching branches: " + err);
+			return [];
+		}
 	}
 }
 
 /**
  * @description every branch item
  */
- export class BranchItem extends vscode.TreeItem {
-  constructor(
-    private version: string,
-    public readonly label: string,
-    public readonly collapsibleState: vscode.TreeItemCollapsibleState
-  ) {
-    super(label, collapsibleState);
-    this.tooltip = `${this.label}-${this.version}`;
-    // this.description = `${this.version}-${Math.ceil(Math.random() * 1000)}`
+export class BranchItem extends vscode.TreeItem {
+	constructor(
+		private version: string,
+		public readonly label: string,
+		public readonly collapsibleState: vscode.TreeItemCollapsibleState
+	) {
+		super(label, collapsibleState);
+		this.tooltip = `${this.label}-${this.version}`;
 	}
 }
-

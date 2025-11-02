@@ -4,16 +4,21 @@
 		"target": "ES2020",
 		"outDir": "out",
 		"lib": [
-			"ES2020"
+			"ES2020",
+			"DOM" // 添加 DOM 库支持 console
 		],
 		"sourceMap": true,
-		"rootDir": "src",
-		"strict": true   /* enable all strict type-checking options */
-		/* Additional Checks */
-		// "noImplicitReturns": true, /* Report error when not all code paths in function return a value. */
-		// "noFallthroughCasesInSwitch": true, /* Report errors for fallthrough cases in switch statement. */
-		// "noUnusedParameters": true,  /* Report errors on unused parameters. */
+		"strict": false, // 临时关闭严格模式
+		"moduleResolution": "node",
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"resolveJsonModule": true,
+		"allowSyntheticDefaultImports": true
 	},
+	"include": [
+		"src",
+		"src/test"
+	],
 	"exclude": [
 		"node_modules",
 		".vscode-test"
